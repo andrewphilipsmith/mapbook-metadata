@@ -5,28 +5,43 @@ Simple low-tech script to export mapbooks
 """
 import arcpy
 import os
-import sys
 import settings
 import datetime
 import logging
 import argparse
+import csv
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 def run_export(args):
-    mxd = get_mxd(args[0])
+
+    mxd_arg = args.MXD_file
+    mxd = get_mxd(mxd_arg)
+    theme = args.theme
+    logging.info("args.MXD_file = {}".format(args.MXD_file))
+    logging.info("args.theme = {}".format(args.theme))
+
     logging.info("mxd name = {}".format(mxd.filePath))
+    logging.info("mxd name = {}".format(mxd.filePath))
+
     filepath, filename = os.path.split(mxd.filePath)
     rootfilename = os.path.splitext(filename)[0]
 
+    ma_web_csv_filename = os.path.join(settings.output_dir, "{}_ma_web.csv".format(rootfilename))
+
+    ma_web_csv = open(ma_web_csv_filename, 'wb')
+    ma_web_csv_writer = csv.writer(ma_web_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
     if mxd.isDDPEnabled:
-        export_data_driven_pages(mxd, rootfilename)
+        export_data_driven_pages(mxd, rootfilename, theme, ma_web_csv_writer)
     else:
-        export_single_page(mxd, rootfilename, None)
+        export_single_page(mxd, rootfilename, None, theme, ma_web_csv_writer)
+
+    ma_web_csv.close()
 
 
-def export_data_driven_pages(mxd, rootfilename):
+def export_data_driven_pages(mxd, rootfilename, theme, ma_web_csv_writer):
 
     for pageNum in range(mxd.dataDrivenPages.pageCount):
 
@@ -35,10 +50,10 @@ def export_data_driven_pages(mxd, rootfilename):
         # filepath = sys.argv[2]
         page_name = mxd.dataDrivenPages.pageRow.getValue(mxd.dataDrivenPages.pageNameField.name)
         pagefilename = "{}_{}".format(rootfilename, page_name)
-        export_single_page(mxd, pagefilename, page_name)
+        export_single_page(mxd, pagefilename, page_name, theme, ma_web_csv_writer)
 
 
-def export_single_page(mxd, rootfilename, location):
+def export_single_page(mxd, rootfilename, location, theme, ma_web_csv_writer):
     export_path = settings.output_dir
 
     pdf_name = os.path.join(export_path, "{}.pdf".format(rootfilename))
@@ -74,15 +89,22 @@ def export_single_page(mxd, rootfilename, location):
                                jpeg_quality=settings.tmbnail_jpeg_quality)
     logging.info("Completed exporting Thumbnail")
 
-    metadata = export_mapaction_website_metadata(mxd, jpeg_name, pdf_name)
+    metadata = export_mapaction_website_metadata(mxd, jpeg_name, pdf_name, location, theme)
     for key, value in metadata.iteritems():
         print "key = {}\t value = {}".format(key, value)
+
+    ma_web_csv_writer.writerow(metadata.values())
+
+    # with open(ma_web_csv_filename, 'wb') as ma_web_csv:
+    #    ma_web_csv_writer = csv.writer(ma_web_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    #    ma_web_csv_writer.writerow(metadata.values())
+    # ma_web_csv.close()
 
     # return pdf_filename, thumbnail_filename
 
 
-def remove_newline_char(str):
-    return str
+def remove_newline_char(some_text):
+    return some_text.rstrip('\r\n')
 
 
 def export_kiosk_metadata(mxd):
@@ -145,7 +167,7 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, t
 
     values["scale"] = remove_newline_char(arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT", "scale")[0].text)
     values["papersize"] = settings.papersize
-    values["jpgresolutiondpi"] = settings.jpgresolutiondpi
+    values["jpgresolutiondpi"] = settings.jpeg_resolution
 
     values["jpgfilesize"] = 0
     values["pdffilesize"] = 0
@@ -162,7 +184,7 @@ def get_mxd(mxdfile):
     if mxdfile is None:
         return arcpy.mapping.MapDocument("current")
     else:
-        return arcpy.mapping.MapDocument(sys.argv[1])
+        return arcpy.mapping.MapDocument(mxdfile)
 
 
 if __name__ == '__main__':
@@ -173,4 +195,5 @@ if __name__ == '__main__':
     parser.add_argument('MXD_file')  # positional, rather than option.
     parser.add_argument('-t', '--theme', default='Reference')
     args = parser.parse_args()
+
     run_export(args)

@@ -15,7 +15,7 @@ jpeg_quality = 80
 
 tmbnail_width = 20
 tmbnail_hieght = 20
-tmbnail_resolution = 96
+tmbnail_resolution = 300
 tmbnail_jpeg_quality = 80
 
 
