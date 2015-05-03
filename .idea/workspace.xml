@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="29615fcc-a785-494d-a54f-1b04309dbd90" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapbook_export.py" afterPath="$PROJECT_DIR$/mapbook_export.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.py" afterPath="$PROJECT_DIR$/settings.py" />
     </list>
     <ignored path="mapbook-metadata.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,12 +29,12 @@
       <file leaf-file-name="mapbook_export.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mapbook_export.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5068259" vertical-offset="1539" max-vertical-offset="3910">
-              <caret line="108" column="80" selection-start-line="108" selection-start-column="80" selection-end-line="108" selection-end-column="80" />
+            <state vertical-scroll-proportion="0.6672355" vertical-offset="1326" max-vertical-offset="4114">
+              <caret line="101" column="5" selection-start-line="101" selection-start-column="5" selection-end-line="101" selection-end-column="5" />
               <folding>
                 <element signature="e#73#85#0" expanded="true" />
-                <element signature="e#5609#5678#0" expanded="false" />
-                <element signature="e#5717#6153#0" expanded="false" />
+                <element signature="e#5987#6056#0" expanded="false" />
+                <element signature="e#6095#6531#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -54,8 +55,8 @@
       <file leaf-file-name="settings.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="383" max-vertical-offset="969">
-              <caret line="48" column="38" selection-start-line="48" selection-start-column="38" selection-end-line="48" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="1190">
+              <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -260,7 +261,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -308,8 +309,8 @@
           <caret line="106" column="35" selection-start-line="106" selection-start-column="35" selection-end-line="106" selection-end-column="35" />
           <folding>
             <element signature="e#73#85#0" expanded="true" />
-            <element signature="e#5609#5678#0" expanded="false" />
-            <element signature="e#5717#6153#0" expanded="false" />
+            <element signature="e#5987#6056#0" expanded="false" />
+            <element signature="e#6095#6531#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -344,20 +345,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="383" max-vertical-offset="969">
-          <caret line="48" column="38" selection-start-line="48" selection-start-column="38" selection-end-line="48" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="1190">
+          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mapbook_export.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5068259" vertical-offset="1539" max-vertical-offset="3910">
-          <caret line="108" column="80" selection-start-line="108" selection-start-column="80" selection-end-line="108" selection-end-column="80" />
+        <state vertical-scroll-proportion="0.6672355" vertical-offset="1326" max-vertical-offset="4114">
+          <caret line="101" column="5" selection-start-line="101" selection-start-column="5" selection-end-line="101" selection-end-column="5" />
           <folding>
             <element signature="e#73#85#0" expanded="true" />
-            <element signature="e#5609#5678#0" expanded="false" />
-            <element signature="e#5717#6153#0" expanded="false" />
+            <element signature="e#5987#6056#0" expanded="false" />
+            <element signature="e#6095#6531#0" expanded="false" />
           </folding>
         </state>
       </provider>

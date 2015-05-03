@@ -15,11 +15,12 @@ logging.basicConfig(level=logging.DEBUG)
 
 def run_export(params):
 
-    mxd_arg = params.MXD_file
+    mxd_arg = params.mxd
     mxd = get_mxd(mxd_arg)
     map_theme = params.map_type
     hri_theme = params.hri_theme
-    logging.info("args.MXD_file = {}".format(args.MXD_file))
+    cluster = params.cluster
+    logging.info("args.MXD_file = {}".format(args.mxd))
     logging.info("args.map_type = {}".format(args.map_type))
     logging.info("args.hri_theme = {}".format(args.hri_theme))
 
@@ -43,15 +44,18 @@ def run_export(params):
 
     if mxd.isDDPEnabled:
         export_data_driven_pages(mxd, rootfilename, map_theme=map_theme, hri_theme=hri_theme, export_path=export_path,
-                                 ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer)
+                                 ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer, cluster=cluster)
     else:
         export_single_page(mxd=mxd, rootfilename=rootfilename, location=None, map_theme=map_theme, hri_theme=hri_theme,
-                           export_path=export_path, ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer)
+                           export_path=export_path, ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer,
+                           cluster=cluster)
 
     ma_web_csv.close()
 
 
-def export_data_driven_pages(mxd, rootfilename, map_theme, hri_theme, export_path, ma_web_csv_writer, hri_csv_writer):
+def export_data_driven_pages(mxd, rootfilename, map_theme, hri_theme, export_path, ma_web_csv_writer, hri_csv_writer,
+                             cluster):
+    first_page = True
 
     for pageNum in range(mxd.dataDrivenPages.pageCount):
 
@@ -60,12 +64,14 @@ def export_data_driven_pages(mxd, rootfilename, map_theme, hri_theme, export_pat
         # filepath = sys.argv[2]
         page_name = mxd.dataDrivenPages.pageRow.getValue(mxd.dataDrivenPages.pageNameField.name)
         pagefilename = "{}_{}".format(rootfilename, page_name)
-        export_single_page(mxd=mxd, rootfilename=pagefilename, location=page_name, map_theme=map_theme, hri_theme=hri_theme,
-                           export_path=export_path, ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer)
+        export_single_page(mxd=mxd, rootfilename=pagefilename, location=page_name, map_theme=map_theme,
+                           hri_theme=hri_theme, export_path=export_path, ma_web_csv_writer=ma_web_csv_writer,
+                           hri_csv_writer=hri_csv_writer, first_page=first_page, cluster=cluster)
+        first_page = False
 
 
-def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export_path, ma_web_csv_writer, hri_csv_writer):
-    first_page = True
+def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export_path, ma_web_csv_writer,
+                       hri_csv_writer,  cluster, first_page=True):
 
     pdf_name = os.path.join(export_path, "{}.pdf".format(rootfilename))
     jpeg_name = os.path.join(export_path, "{}.jpeg".format(rootfilename))
@@ -92,10 +98,10 @@ def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export
     logging.info("Completed exporting JPEG")
 
     # thumbnail
+    #                           df_export_height=settings.tmbnail_hieght,
+    #                           df_export_width=settings.tmbnail_width,
     logging.info("Started exporting Thumbnail")
     arcpy.mapping.ExportToJPEG(mxd, thumbnail_filename, data_frame='page_layout',
-                               df_export_height=settings.tmbnail_hieght,
-                               df_export_width=settings.tmbnail_width,
                                resolution=settings.tmbnail_resolution,
                                jpeg_quality=settings.tmbnail_jpeg_quality)
     logging.info("Completed exporting Thumbnail")
@@ -104,7 +110,8 @@ def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export
     ma_metadata = export_mapaction_website_metadata(mxd=mxd, jpgfilename=jpeg_name, pdffilename=pdf_name,
                                                     location=location, map_theme=map_theme)
     hri_metadata = export_hr_info_metadata(mxd=mxd, location=location, map_theme=map_theme,
-                                           hri_theme=hri_theme, coord_hub=args.hub)
+                                           hri_theme=hri_theme, coord_hub=args.hub, pdf_full_path=pdf_name,
+                                           cluster=cluster, thumbnail=thumbnail_filename)
     for key, value in ma_metadata.iteritems():
         logging.info("MA Web metadata key = {}\t value = {}".format(key, value))
 
@@ -141,6 +148,7 @@ def export_kiosk_metadata(mxd):
     return values
     """
     pass
+
 
 def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, map_theme):
     values = {}
@@ -194,7 +202,7 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, m
     return values
 
 
-def export_hr_info_metadata(mxd, location, map_theme, hri_theme, coord_hub):
+def export_hr_info_metadata(mxd, location, map_theme, hri_theme, coord_hub, pdf_full_path, cluster, thumbnail):
     """
     DONE Title 	            The actual human readable title of the map
     DONE Type 	            Reference, Thematic, etc. Note: Use the 'Map Type' controlled vocabulary in the site
@@ -209,16 +217,20 @@ def export_hr_info_metadata(mxd, location, map_theme, hri_theme, coord_hub):
     """
     values = {}
     values["title"] = remove_newline_char(arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT", "title")[0].text)
+    values["Type"] = map_theme
+    values["File"] = settings.hri_dropbox_url + '\\' + os.path.relpath(pdf_full_path, settings.output_dir)
     values["Language"] = 'en'
     values["Publication Date"] = str(datetime.datetime.now().strftime('%Y-%b-%d'))
+    values["Thumbnail"] = os.path.split(thumbnail)[1]
+    values["Source"] = "MapAction"
     values["Location"] = location
+    values["Cluster"] = cluster
     values["Themes"] = hri_theme
-    values["Emergencies"] = settings.hri_emergencies
-    values["Type"] = map_theme
     values["Coordination"] = coord_hub
-    ## values["File"] =
+    values["Emergencies"] = settings.hri_emergencies
 
     return values
+
 
 def get_mxd(mxdfile):
     if mxdfile is None:
@@ -232,7 +244,7 @@ if __name__ == '__main__':
         description='Exports MXDs to PDFs, MXDs and thumbnails. It also exports a CSV metadata file with various map'
                     'metadata fields. Handles Data Driven Pages by exporting a individual file per page'
     )
-    parser.add_argument('MXD_file')  # positional, rather than option.
+    parser.add_argument('mxd')  # positional, rather than option.
     parser.add_argument('-t', '--hri_theme', default='Disaster Management')
     parser.add_argument('-m', '--map_type', default='Reference Maps')
     parser.add_argument('-c', '--cluster', default='Inter-Cluster Coordination')
