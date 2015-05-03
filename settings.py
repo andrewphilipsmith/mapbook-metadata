@@ -2,6 +2,9 @@ __author__ = 'asmith'
 
 dataframe = "Main map"
 papersize = "A3"
+"""
+Doesn't include the maXXX map number specific directory)
+"""
 output_dir = r"D:\work\custom-software-group\code\github\mapbook-metadata\testoutput"
 
 pdf_resolution = 300
@@ -21,6 +24,8 @@ tmbnail_jpeg_quality = 80
 
 # hri => HumanitarianResponse.Info
 hri_dropbox_url = ""
+hri_dropbox_local_path = ""
+hri_emergencies = "Nepal: Earthquake - Apr 2015"
 
 # maw => MapAction Website
 maw_operational_id = 240

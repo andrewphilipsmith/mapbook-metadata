@@ -43,7 +43,7 @@ Temporary Items
 .apdisk
 
 # testoutput dir
-testouput
+testouput/
 
 # python stuff
 *.pyc

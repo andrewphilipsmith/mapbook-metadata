@@ -28,7 +28,9 @@ def run_export(args):
     filepath, filename = os.path.split(mxd.filePath)
     rootfilename = os.path.splitext(filename)[0]
 
-    ma_web_csv_filename = os.path.join(settings.output_dir, "{}_ma_web.csv".format(rootfilename))
+    map_subdir = arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT", "map_no")[0].text.strip()
+    export_path = os.path.join(settings.output_dir, map_subdir)
+    ma_web_csv_filename = os.path.join(export_path, "{}_ma_web.csv".format(rootfilename))
 
     ma_web_csv = open(ma_web_csv_filename, 'wb')
     ma_web_csv_writer = csv.writer(ma_web_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -91,7 +93,7 @@ def export_single_page(mxd, rootfilename, location, theme, ma_web_csv_writer):
 
     metadata = export_mapaction_website_metadata(mxd, jpeg_name, pdf_name, location, theme)
     for key, value in metadata.iteritems():
-        print "key = {}\t value = {}".format(key, value)
+        logging.info("MA Web metadata key = {}\t value = {}".format(key, value))
 
     ma_web_csv_writer.writerow(metadata.values())
 
@@ -104,7 +106,8 @@ def export_single_page(mxd, rootfilename, location, theme, ma_web_csv_writer):
 
 
 def remove_newline_char(some_text):
-    return some_text.rstrip('\r\n')
+    # some_text.replace('\n', ' ')
+    return " ".join(some_text.split())
 
 
 def export_kiosk_metadata(mxd):
@@ -142,8 +145,8 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, t
     values["ymin"] = arcpy.mapping.ListDataFrames(mxd, "Main map")[0].extent.YMin
     values["proj"] = arcpy.mapping.ListDataFrames(mxd, settings.dataframe)[0].spatialReference.name
     values["datum"] = arcpy.mapping.ListDataFrames(mxd, settings.dataframe)[0].spatialReference.datumName
-    values["jpgfilename"] = jpgfilename
-    values["pdffilename"] = pdffilename
+    values["jpgfilename"] = os.path.split(jpgfilename)[1]
+    values["pdffilename"] = os.path.split(pdffilename)[1]
     values["qclevel"] = settings.maw_qclevel
     values["qcname"] = settings.maw_qcname
     values["access"] = settings.maw_access
@@ -151,7 +154,7 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, t
     values["summary"] = remove_newline_char(arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT", "summary")[0].text)
 
     values["pdfresolutiondpi"] = settings.pdf_resolution
-    values["mxdfilename"] =  os.path.split(mxd.filePath)[1]
+    values["mxdfilename"] = os.path.split(mxd.filePath)[1]
     values["paperxmax"] = ""
     values["paperxmin"] = ""
     values["paperymin"] = ""
@@ -176,8 +179,27 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, t
     return values
 
 
-def export_hr_info_metadata():
-    pass
+def export_hr_info_metadata(location, theme):
+    values = {}
+    values["title"] = remove_newline_char(arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT", "title")[0].text)
+    values["Language"] = 'en'
+    values["Publication Date"] = str(datetime.datetime.now().strftime('%Y-%b-%d'))
+    values["Location"] = location
+    values["Themes"] = theme
+    values["Emergencies"] = settings.hri_emergencies
+
+"""
+DONE Title 	            The actual human readable title of the map
+Type 	            Reference, Thematic, etc. Note: Use the 'Map Type' controlled vocabulary in the site
+File 	            The URL of file sitting in the Dropbox folder. Note: remove the www from the URL and put 'dl' instead
+DONE Language 	        Language of the file. For English use 'en'
+Cluster             Cluster(s) to which the map belongs to. For multiple cluster use ';' e.g. 'Protection;Emergency
+DONE Publication Date 	Date when the map was published. Use the format, "dd-mmm-yyyy" i.e. "02-Jan-2011"
+Coordination Hub 	Full name of the Coordination hub where the map could belong to. This should be already available in
+DONE Location            Geographic location where the map belongs to. Please note that the location should already be
+DONE Themes              Theme(s) where the person could belongs to. For multiple themes use ";" Example: "Age; Early Warning;"
+DONE Emergencies 	    Emergency where the person could belong to. For multiple emergencies use ';' Example:
+"""
 
 
 def get_mxd(mxdfile):
