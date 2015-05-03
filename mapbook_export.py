@@ -13,13 +13,12 @@ import csv
 
 logging.basicConfig(level=logging.DEBUG)
 
+def run_export(params):
 
-def run_export(args):
-
-    mxd_arg = args.MXD_file
+    mxd_arg = params.MXD_file
     mxd = get_mxd(mxd_arg)
-    map_theme = args.map_type
-    hri_theme = args.hri_theme
+    map_theme = params.map_type
+    hri_theme = params.hri_theme
     logging.info("args.MXD_file = {}".format(args.MXD_file))
     logging.info("args.map_type = {}".format(args.map_type))
     logging.info("args.hri_theme = {}".format(args.hri_theme))
@@ -61,7 +60,7 @@ def export_data_driven_pages(mxd, rootfilename, map_theme, hri_theme, export_pat
         # filepath = sys.argv[2]
         page_name = mxd.dataDrivenPages.pageRow.getValue(mxd.dataDrivenPages.pageNameField.name)
         pagefilename = "{}_{}".format(rootfilename, page_name)
-        export_single_page(mxd=mxd, rootfilename=rootfilename, location=None, map_theme=map_theme, hri_theme=hri_theme,
+        export_single_page(mxd=mxd, rootfilename=pagefilename, location=page_name, map_theme=map_theme, hri_theme=hri_theme,
                            export_path=export_path, ma_web_csv_writer=ma_web_csv_writer, hri_csv_writer=hri_csv_writer)
 
 
@@ -104,8 +103,8 @@ def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export
     # Export MapAction website metadata
     ma_metadata = export_mapaction_website_metadata(mxd=mxd, jpgfilename=jpeg_name, pdffilename=pdf_name,
                                                     location=location, map_theme=map_theme)
-    hri_metadata = export_hr_info_metadata(location=location, map_theme=map_theme,
-                                           hri_theme=hri_theme, coord_hub=map_theme)
+    hri_metadata = export_hr_info_metadata(mxd=mxd, location=location, map_theme=map_theme,
+                                           hri_theme=hri_theme, coord_hub=args.hub)
     for key, value in ma_metadata.iteritems():
         logging.info("MA Web metadata key = {}\t value = {}".format(key, value))
 
@@ -118,7 +117,7 @@ def export_single_page(mxd, rootfilename, location, map_theme, hri_theme, export
         hri_csv_writer.writerow(hri_metadata.keys())
 
     ma_web_csv_writer.writerow(ma_metadata.values())
-    hri_csv_writer.writerow(hri_metadata.keys())
+    hri_csv_writer.writerow(hri_metadata.values())
 
 
 def remove_newline_char(some_text):
@@ -195,7 +194,7 @@ def export_mapaction_website_metadata(mxd, jpgfilename, pdffilename, location, m
     return values
 
 
-def export_hr_info_metadata(location, map_theme, hri_theme, coord_hub):
+def export_hr_info_metadata(mxd, location, map_theme, hri_theme, coord_hub):
     """
     DONE Title 	            The actual human readable title of the map
     DONE Type 	            Reference, Thematic, etc. Note: Use the 'Map Type' controlled vocabulary in the site

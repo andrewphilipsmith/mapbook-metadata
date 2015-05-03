@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="29615fcc-a785-494d-a54f-1b04309dbd90" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapbook_export.py" afterPath="$PROJECT_DIR$/mapbook_export.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapbook-metadata.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,12 +28,12 @@
       <file leaf-file-name="mapbook_export.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mapbook_export.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7662116" vertical-offset="656" max-vertical-offset="3927">
-              <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5068259" vertical-offset="1539" max-vertical-offset="3910">
+              <caret line="108" column="80" selection-start-line="108" selection-start-column="80" selection-end-line="108" selection-end-column="80" />
               <folding>
                 <element signature="e#73#85#0" expanded="true" />
-                <element signature="e#5587#5656#0" expanded="false" />
-                <element signature="e#5695#6131#0" expanded="false" />
+                <element signature="e#5609#5678#0" expanded="false" />
+                <element signature="e#5717#6153#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -310,8 +308,8 @@
           <caret line="106" column="35" selection-start-line="106" selection-start-column="35" selection-end-line="106" selection-end-column="35" />
           <folding>
             <element signature="e#73#85#0" expanded="true" />
-            <element signature="e#5587#5656#0" expanded="false" />
-            <element signature="e#5695#6131#0" expanded="false" />
+            <element signature="e#5609#5678#0" expanded="false" />
+            <element signature="e#5717#6153#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -354,12 +352,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapbook_export.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7662116" vertical-offset="656" max-vertical-offset="3927">
-          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5068259" vertical-offset="1539" max-vertical-offset="3910">
+          <caret line="108" column="80" selection-start-line="108" selection-start-column="80" selection-end-line="108" selection-end-column="80" />
           <folding>
             <element signature="e#73#85#0" expanded="true" />
-            <element signature="e#5587#5656#0" expanded="false" />
-            <element signature="e#5695#6131#0" expanded="false" />
+            <element signature="e#5609#5678#0" expanded="false" />
+            <element signature="e#5717#6153#0" expanded="false" />
           </folding>
         </state>
       </provider>
